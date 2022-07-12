@@ -12,18 +12,33 @@ import {useEffect, useState} from "react";
 function Quote(props){
     return (
         <>
-            <p className="text-3xl mx-0">{props.quote}</p>
-            <p className="text-xl text-center sm:text-right my-4 font-light " >- Beverly Sills</p>
+            <p className="text-3xl mx-0">{props.quote.quote}</p>
+            <p className="text-xl text-center sm:text-right my-4 font-light " >- {props.quote.author}</p>
         </>
     )
 }
 
-function Tombol(){
+function App(){
 
     const [count, setCount] = useState(0)
-    const [quote, setQuote] = useState('');
+    const [quote, setQuote] = useState({quote:'', author:''});
+    const [color, setColor] = useState('')
 
-    useEffect(() => {
+    function colorRespond(){
+        const options = {
+            method: 'GET',
+            headers: {
+                'X-RapidAPI-Key': '6878024220mshd9eb70b208c93eap163c79jsna2fce556f4a4',
+                'X-RapidAPI-Host': 'random-palette-generator.p.rapidapi.com'
+            }
+        };
+
+        fetch('https://random-palette-generator.p.rapidapi.com/palette/10/3', options)
+            .then(response => response.json())
+            .then(response => setColor(response.data[0].palette[0]))
+    }
+
+    function quoteRespond(){
         const options = {
             method: 'GET',
             headers: {
@@ -42,16 +57,30 @@ function Tombol(){
                     if(response.message == "You have exceeded the rate limit per second for your plan, BASIC, by the API provider"){
                         setQuote("Too Many Request")
                     } else {
-                        setQuote(response.content)
+                        let updatedValue = {
+                            quote : response.content,
+                            author : response.originator.name
+                        }
+                        setQuote(quote => ({
+                            ...quote,
+                            ...updatedValue
+                        }))
                     }
                 }
-        )
+            )
+    }
+
+    useEffect(() => {
+        quoteRespond()
+        colorRespond()
 
     },[count] );
 
 
     return(
-        <>
+        <div className="App h-screen flex items-center p-8" style={{backgroundColor : color}} >
+            <Container maxWidth="sm" className="">
+                <Box className="p-12 " sx={{ bgcolor: '#cfe8fc' }} >
         <Quote quote={quote}/>
     <div className="sm:grid sm:grid-cols-2 sm:mt-8" >
             <div className="flex sm:justify-start justify-left">
@@ -62,20 +91,10 @@ function Tombol(){
                 <Button onClick={() => setCount((c) => c + 1)}  sx={{textTransform: 'none',  width: {xs: 1, sm:"auto"}}} variant="contained" >New Quote</Button>
             </div>
         </div>
-        </>
+                </Box>
+            </Container>
+        </div>
     )
-}
-
-function App() {
-  return (
-    <div className="App h-screen flex items-center">
-        <Container maxWidth="sm" className="">
-            <Box className="p-12 " sx={{ bgcolor: '#cfe8fc' }} >
-                <Tombol/>
-            </Box>
-        </Container>
-    </div>
-  );
 }
 
 export default App;

@@ -55,7 +55,14 @@ function App(){
             .then(
                 response =>  {
                     if(response.message == "You have exceeded the rate limit per second for your plan, BASIC, by the API provider"){
-                        setQuote("Too Many Request")
+                        let updatedValue = {
+                            quote : "Too Many Request :( ",
+                            author : "Hirohito"
+                        }
+                        setQuote(quote => ({
+                            ...quote,
+                            ...updatedValue
+                        }))
                     } else {
                         let updatedValue = {
                             quote : response.content,
@@ -84,11 +91,11 @@ function App(){
         <Quote quote={quote}/>
     <div className="sm:grid sm:grid-cols-2 sm:mt-8" >
             <div className="flex sm:justify-start justify-left">
-                <Button sx={{width: {xs: 1/2, sm:"auto"},}} variant="contained" ><TwitterIcon/></Button>
-                <Button sx={{ml: 1, width: {xs: 1/2, sm:"auto"}}}  variant="contained" ><RedditIcon/></Button>
+                <Button style={{backgroundColor : color}}  sx={{width: {xs: 1/2, sm:"auto"},}} variant="contained" ><TwitterIcon/></Button>
+                <Button style={{backgroundColor : color}}  sx={{ml: 1, width: {xs: 1/2, sm:"auto"}}}  variant="contained" ><RedditIcon/></Button>
             </div>
             <div className="flex sm:justify-end justify-left sm:mt-0 mt-2">
-                <Button onClick={() => setCount((c) => c + 1)}  sx={{textTransform: 'none',  width: {xs: 1, sm:"auto"}}} variant="contained" >New Quote</Button>
+                <Button style={{backgroundColor : color}}  onClick={() => setCount((c) => c + 1)}  sx={{textTransform: 'none',  width: {xs: 1, sm:"auto"}}} variant="contained" >New Quote</Button>
             </div>
         </div>
                 </Box>

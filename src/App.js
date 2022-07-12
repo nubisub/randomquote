@@ -33,12 +33,20 @@ function Tombol(){
         };
 
         fetch('https://quotes15.p.rapidapi.com/quotes/random/', options)
-            .then(response => response.json())
+            // .then(response => console.log(response.status))
+            .then(
+                response =>
+                    response.json())
             .then(
                 response =>  {
-                   setQuote(response.content)
+                    if(response.message == "You have exceeded the rate limit per second for your plan, BASIC, by the API provider"){
+                        setQuote("Too Many Request")
+                    } else {
+                        setQuote(response.content)
+                    }
                 }
-            )
+        )
+
     },[count] );
 
 
